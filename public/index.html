@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BFHL Hierarchy Explorer</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="page-header">
+        <div class="page-title">
+          <h1>BFHL Hierarchy Explorer</h1>
+          <p class="page-copy page-subtitle">Inspect node relationships, hierarchies, and cycles.</p>
+        </div>
+        <div class="page-status">
+          <span id="apiStatus" class="api-status idle">API status: idle</span>
+        </div>
+      </header>
+
+      <main>
+        <div class="top-grid">
+          <section class="input-panel">
+            <div class="panel-title-row">
+              <div>
+                <h2>Access Control</h2>
+                <p class="panel-copy">Click to login or sign up inside the popup before submitting relationships.</p>
+              </div>
+              <div class="access-actions">
+                <button id="openAuthBtn" class="primary">Open Login / Signup</button>
+                <button id="logoutBtn" class="secondary hidden">Logout</button>
+              </div>
+            </div>
+            <div id="loginStatus" class="status">Please login or sign up to enable hierarchy analysis.</div>
+
+            <div class="panel-title-row top-margin">
+              <div>
+                <h2>Input Relationships</h2>
+                <p class="panel-copy">Enter one relationship per line in the format <code>A-&gt;B</code>.</p>
+              </div>
+              <div class="input-actions">
+                <button id="submitBtn" disabled>Submit</button>
+                <button id="exampleBtn" class="secondary">Load Example</button>
+                <button id="clearBtn" class="secondary">Clear</button>
+              </div>
+            </div>
+
+            <textarea id="inputData" placeholder="A->B\nA->C\nB->D"></textarea>
+
+            <div class="status-panel">
+              <div id="spinner" class="spinner hidden" aria-hidden="true"></div>
+              <div id="statusMessage" class="status">Ready to analyze your graph.</div>
+            </div>
+          </section>
+
+          <aside class="info-panel">
+            <div class="info-card">
+              <h3>About</h3>
+              <p>This tool accepts node relationships like <code>A-&gt;B</code> and generates hierarchy visualizations while reporting invalid entries, duplicate edges, and cycles.</p>
+            </div>
+            <div class="info-card">
+              <h3>Rules Summary</h3>
+              <ul class="rules-list">
+                <li><strong>Format:</strong> X-&gt;Y where X and Y are uppercase letters (A-Z)</li>
+                <li><strong>Self-loops:</strong> A-&gt;A are invalid</li>
+                <li><strong>Multi-parent:</strong> first parent wins</li>
+                <li><strong>Cycles:</strong> detected and reported</li>
+                <li><strong>Depth:</strong> longest root-to-leaf path</li>
+              </ul>
+            </div>
+          </aside>
+        </div>
+
+        <section id="results" class="results hidden">
+          <div class="results-top">
+            <div>
+              <h2>Hierarchies</h2>
+              <p class="panel-copy">Review the generated summary metrics and hierarchy groups below.</p>
+            </div>
+            <div class="results-controls">
+              <button id="expandAllBtn" class="secondary">Expand All</button>
+              <button id="collapseAllBtn" class="secondary">Collapse All</button>
+            </div>
+          </div>
+
+          <div id="summaryCards" class="stats-grid"></div>
+          <div id="hierarchyCards" class="hierarchy-grid"></div>
+
+          <div class="bottom-grid">
+            <section class="panel card">
+              <h3>Invalid Entries</h3>
+              <div id="invalidCard" class="panel-content">None</div>
+            </section>
+            <section class="panel card">
+              <h3>Duplicate Edges</h3>
+              <div id="duplicateCard" class="panel-content">None</div>
+            </section>
+            <section class="panel card response-panel">
+              <div class="panel-title-row">
+                <h3>API Response</h3>
+                <button id="copyJsonBtn" class="secondary small">Copy JSON</button>
+              </div>
+              <pre id="responseJson" class="response-json">Waiting for submission...</pre>
+            </section>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="authModal" class="modal hidden" aria-hidden="true">
+      <div class="modal-backdrop"></div>
+      <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="authModalTitle">
+        <div class="modal-header">
+          <div>
+            <h2 id="authModalTitle">Login or Signup</h2>
+            <p class="panel-copy">If you already signed up, use Login. If not, switch to Signup.</p>
+          </div>
+          <button id="authModalClose" class="icon-button" aria-label="Close login modal">×</button>
+        </div>
+
+        <div class="auth-tabs">
+          <button id="loginTabBtn" class="tab-button active">Login</button>
+          <button id="signupTabBtn" class="tab-button">Signup</button>
+        </div>
+
+        <div class="modal-body">
+          <label>
+            Username
+            <input id="loginUsername" type="text" placeholder="student" autocomplete="username" />
+          </label>
+          <label>
+            Password
+            <input id="loginPassword" type="password" placeholder="password123" autocomplete="current-password" />
+          </label>
+          <label class="signup-only hidden">
+            Email
+            <input id="loginEmail" type="email" placeholder="student@college.edu" autocomplete="email" />
+          </label>
+          <label class="signup-only hidden">
+            College Roll
+            <input id="loginRoll" type="text" placeholder="123456" autocomplete="off" />
+          </label>
+
+          <div class="auth-actions">
+            <button id="modalLoginBtn">Login</button>
+            <button id="modalSignupBtn" class="secondary hidden">Signup</button>
+          </div>
+          <div id="authMessage" class="status">Fill the form to login or signup.</div>
+        </div>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
